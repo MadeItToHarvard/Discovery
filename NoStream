@@ -1,0 +1,56 @@
+package routines;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+public class NationalityUtils {
+
+    // Liste des nationalités de l'Union Européenne au format ISO
+    private static final List<String> EU_COUNTRIES_LIST = Arrays.asList(
+        "AT", "BE", "BG", "CY", "CZ", "DE", "DK", "EE", "ES", "FI", "FR", 
+        "GR", "HR", "HU", "IE", "IT", "LT", "LU", "LV", "MT", "NL", "PL", 
+        "PT", "RO", "SE", "SI", "SK");
+
+    /**
+     * Sélectionne la nationalité selon les règles spécifiées :
+     * - Si une nationalité de l'UE est présente, retourne la première nationalité UE par ordre alphabétique.
+     * - Sinon, retourne la première nationalité par ordre alphabétique parmi toutes les nationalités fournies.
+     * - Si aucune nationalité n'est fournie, retourne null.
+     *
+     * @param inputNationalities La chaîne de nationalités séparées par des virgules.
+     * @return La nationalité sélectionnée ou null si aucune nationalité n'est fournie.
+     */
+    public static String selectNationality(String inputNationalities) {
+        // Vérifie si la chaîne de nationalités est nulle ou vide
+        if (inputNationalities == null || inputNationalities.isEmpty()) {
+            return null; // Retourne null si aucune nationalité n'est fournie
+        }
+
+        // Divise la chaîne en un tableau
+        String[] nationalityArray = inputNationalities.split(",");
+        List<String> nationalityList = Arrays.asList(nationalityArray);
+
+        // Initialisation de la variable pour stocker la première nationalité UE trouvée
+        String MifirNationality = null;
+
+        // Cherche la première nationalité UE la plus petite alphabétiquement
+        for (String nationality : nationalityList) {
+            if (EU_COUNTRIES_LIST.contains(nationality)) {
+                if (MifirNationality == null || nationality.compareTo(MifirNationality) < 0) {
+                    MifirNationality = nationality;
+                }
+            }
+        }
+
+        // Si une nationalité UE a été trouvée, retourne cette nationalité
+        if (MifirNationality != null) {
+            return MifirNationality;
+        }
+
+        // Sinon, retourne la première nationalité triée alphabétiquement parmi toutes les nationalités fournies
+        // Trie la liste des nationalités non UE
+        Collections.sort(nationalityList);
+        // Retourne la première nationalité ou null si la liste est vide
+        return nationalityList.isEmpty() ? null : nationalityList.get(0);
+    }
