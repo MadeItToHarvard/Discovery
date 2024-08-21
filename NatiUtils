@@ -1,0 +1,36 @@
+package routines;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+public class NationalityUtils {
+    
+    // Liste des nationalités de l'Union Européenne au format ISO
+    private static final List<String> EU_COUNTRIES = Arrays.asList(
+        "AT", "BE", "BG", "CY", "CZ", "DE", "DK", "EE", "ES", "FI", "FR", 
+        "GR", "HR", "HU", "IE", "IT", "LT", "LU", "LV", "MT", "NL", "PL", 
+        "PT", "RO", "SE", "SI", "SK");
+
+    public static String selectNationality(String nationalities) {
+        if (nationalities == null || nationalities.isEmpty()) {
+            return null;
+        }
+
+        // Divise la chaîne en un tableau
+        String[] nationalityArray = nationalities.split(",");
+        List<String> nationalityList = Arrays.asList(nationalityArray);
+
+        // Cherche les nationalités de l'UE
+        Optional<String> euNationality = nationalityList.stream()
+            .filter(EU_COUNTRIES::contains)
+            .sorted()
+            .findFirst();
+
+        // Retourne la première nationalité non UE triée alphabétiquement si aucune nationalité UE n'est trouvée
+        return euNationality.orElseGet(() -> nationalityList.stream()
+                .sorted()
+                .findFirst()
+                .orElse(null));
+    }
+}
